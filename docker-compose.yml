@@ -2,7 +2,7 @@ version: '3'
 services:
   app:
     restart: always
-    build: .
+    #build: .
     image: reg.nya.codes/nyaone/email2misskey
     networks:
       - internal_network
