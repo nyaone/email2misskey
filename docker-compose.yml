@@ -23,7 +23,8 @@ services:
           memory: 256M
     networks:
       - internal_network
-
+    volumes:
+      - ./redis:/data
 networks:
   internal_network:
     internal: true
