@@ -8,6 +8,7 @@
     "host": ["nya.one"]
   },
   "system": {
-    "redis": "redis://localhost:6379/0"
+    "redis": "redis://redis:6379/0",
+    "production": true
   }
 }
