@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    restart: always
+    build: .
+    image: reg.nya.codes/nyaone/email2misskey
+    networks:
+      - internal_network
+      - external_network
+    ports:
+      - "25:2525"
+    volumes:
+      - "./config.json:/app/config.json:ro"
+    environment:
+      MODE: prod
+
+  redis:
+    restart: always
+    image: redis:alpine
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    networks:
+      - internal_network
+
+networks:
+  internal_network:
+    internal: true
+  external_network:

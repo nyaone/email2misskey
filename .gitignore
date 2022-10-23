@@ -21,3 +21,10 @@
 
 # macOS
 .DS_Store
+
+# Configurations
+config.json
+
+# Test files
+*.eml
+*.zip
