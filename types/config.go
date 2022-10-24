@@ -2,9 +2,9 @@ package types
 
 type Config struct {
 	Misskey struct {
-		Instance string  `json:"instance"`
-		Token    string  `json:"token"`
-		FolderID *string `json:"folderId"`
+		Instance string `json:"instance"`
+		Token    string `json:"token"`
+		FolderID string `json:"folderId"`
 	} `json:"misskey"`
 	EMail struct {
 		Host []string `json:"host"`

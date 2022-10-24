@@ -28,8 +28,8 @@ func CompressAndUploadFile(filename string, fileBuffer *bytes.Buffer) (string, e
 		global.Logger.Errorf("Failed to write field data i with error: %v", err)
 		return "", err
 	}
-	if global.Config.Misskey.FolderID != nil {
-		err = bodyWriter.WriteField("folderId", *global.Config.Misskey.FolderID)
+	if global.Config.Misskey.FolderID != "" {
+		err = bodyWriter.WriteField("folderId", global.Config.Misskey.FolderID)
 		if err != nil {
 			global.Logger.Errorf("Failed to write field data folderId with error: %v", err)
 			return "", err
