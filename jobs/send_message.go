@@ -36,6 +36,8 @@ func SendMessage(userID string, emailFileID string, emailSubject string, emailSe
 		return err
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+
 	if res.StatusCode != http.StatusOK {
 		// Failed
 		global.Logger.Errorf("Request failed.")
