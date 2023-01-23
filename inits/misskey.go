@@ -26,6 +26,8 @@ func Misskey() error {
 		return err
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+
 	res, err := (&http.Client{}).Do(req)
 	if err != nil {
 		global.Logger.Errorf("Failed to finish request with error: %v", err)
