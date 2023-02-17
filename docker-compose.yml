@@ -11,8 +11,6 @@ services:
       - "25:25"
     volumes:
       - "./config.yml:/app/config.yml:ro"
-    environment:
-      MODE: prod
 
   redis:
     restart: always

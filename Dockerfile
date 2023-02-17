@@ -26,7 +26,5 @@ COPY --from=Builder /app/email2misskey /app/app
 # This container exposes port 8080 to the outside world
 EXPOSE 2525/tcp
 
-ENV MODE=prod
-
 # Run the executable
 CMD ["/app/app"]
