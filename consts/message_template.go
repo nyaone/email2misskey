@@ -1,5 +1,6 @@
 package consts
 
 const (
-	MessageTemplate = "新邮件来啦！\n\n 标题：%s\n 来自：%s\n 完整的邮件已经为您作为附件带上啦～"
+	SummaryTemplate = "新邮件来啦！ #email 标题：%s"
+	MessageTemplate = "发件人是 %s\n\n您可以[点击这里](%s)预览完整内容，或者下载附件查看～"
 )

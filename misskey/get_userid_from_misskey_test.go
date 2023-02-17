@@ -1,13 +1,13 @@
-package jobs
+package misskey
 
 import (
-	"email2misskey/global"
+	"email2misskey/config"
 	"testing"
 )
 
 func TestGetUserIDFromMisskey(t *testing.T) {
 	// Init settings
-	global.Config.Misskey.Instance = "nya.one"
+	config.Config.Misskey.Instance = "nya.one"
 
 	t.Log(getUserIDFromMisskey("candinya"))
 

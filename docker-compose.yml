@@ -10,7 +10,7 @@ services:
     ports:
       - "25:2525"
     volumes:
-      - "./config.json:/app/config.json:ro"
+      - "./config.yml:/app/config.yml:ro"
     environment:
       MODE: prod
 

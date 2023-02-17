@@ -1,27 +1,27 @@
 package inits
 
 import (
-	"email2misskey/global"
-	"encoding/json"
-	"log"
+	"email2misskey/config"
+	"gopkg.in/yaml.v3"
 	"os"
 )
 
 func Config() error {
-	// Read config.json
-	f, err := os.Open("config.json")
+	// Read config file
+	configFilePosition, exist := os.LookupEnv("CONFIG_FILE_PATH")
+	if !exist {
+		configFilePosition = "config.yml"
+	}
+
+	configFileBytes, err := os.ReadFile(configFilePosition)
 	if err != nil {
-		log.Printf("Failed to open config.json file with error: %v", err)
 		return err
 	}
 
-	defer f.Close()
-	err = json.NewDecoder(f).Decode(&global.Config)
+	err = yaml.Unmarshal(configFileBytes, &config.Config)
 	if err != nil {
-		log.Printf("Failed to decode config.json file contents with error: %v", err)
 		return err
 	}
 
-	log.Printf("Configurations initialized")
 	return nil
 }

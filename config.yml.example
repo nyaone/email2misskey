@@ -1,0 +1,12 @@
+misskey:
+  instance: "nya.one"
+  token: ""
+  folderId: ""
+email:
+  host:
+    - "nya.one"
+  readerUrl: "https://mail.nya.one"
+system:
+  redis: "redis://localhost:6379/0"
+  listen: "0.0.0.0:2525"
+  production: true

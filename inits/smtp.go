@@ -1,6 +1,7 @@
 package inits
 
 import (
+	"email2misskey/config"
 	"email2misskey/consts"
 	"email2misskey/global"
 	"email2misskey/handlers"
@@ -12,28 +13,28 @@ import (
 func SMTP() error {
 	// Config hosts
 	cfg := &guerrilla.AppConfig{
-		AllowedHosts: global.Config.EMail.Host,
+		AllowedHosts: config.Config.EMail.Host,
 	}
 	// Config logger
-	if global.Config.System.Production {
+	if config.Config.System.Production {
 		cfg.LogLevel = "error"
 	} else {
 		cfg.LogLevel = "debug"
 	}
 	// Config server
 	sc := guerrilla.ServerConfig{
-		ListenInterface: "0.0.0.0:2525",
+		ListenInterface: config.Config.System.Listen,
 		IsEnabled:       true,
 	}
 	cfg.Servers = append(cfg.Servers, sc)
 	// Config backend
 	additionalSaveProcess := ""
-	if !global.Config.System.Production {
+	if !config.Config.System.Production {
 		additionalSaveProcess = "|Debugger"
 	}
 	bcfg := backends.BackendConfig{
 		"save_process":       fmt.Sprintf("HeadersParser|Header|Hasher%s|%s", additionalSaveProcess, consts.ProcessorID),
-		"log_received_mails": !global.Config.System.Production,
+		"log_received_mails": !config.Config.System.Production,
 	}
 	cfg.BackendConfig = bcfg
 	d := guerrilla.Daemon{
