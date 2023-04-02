@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"bytes"
 	"email2misskey/config"
 	"email2misskey/consts"
 	"email2misskey/global"
 	"email2misskey/misskey"
 	"fmt"
+	"github.com/emersion/go-msgauth/dkim"
 	"github.com/flashmob/go-guerrilla/backends"
 	"github.com/flashmob/go-guerrilla/mail"
 	"strings"
@@ -19,6 +21,29 @@ func IncomingEMAil() backends.ProcessorConstructor {
 				func(e *mail.Envelope, task backends.SelectTask) (backends.Result, error) {
 					if task == backends.TaskSaveMail {
 						global.Logger.Debugf("A new incoming eMail")
+						// Check size
+						if config.Config.EMail.SizeLimit > 0 && e.Data.Len() > config.Config.EMail.SizeLimit {
+							// Too large
+							err := fmt.Errorf("email too large")
+							return backends.NewResult(fmt.Sprintf("552 Error: %s", err)), err
+						}
+
+						// Verify DKIM
+						if config.Config.EMail.VerifyDKIM {
+							verifications, err := dkim.Verify(bytes.NewReader(e.Data.Bytes()))
+							if err != nil {
+								// Failed to verify DKIM
+								return backends.NewResult(fmt.Sprintf("451 Error: %s", err)), err
+							}
+							for _, v := range verifications {
+								if v.Err != nil {
+									// Invalid signature
+									return backends.NewResult(fmt.Sprintf("503 Error: %s", err)), err
+								}
+							}
+						}
+
+						// Send to target user
 						var pendingUserIDs []string
 						for _, rcpt := range e.RcptTo {
 							username := strings.ToLower(rcpt.User)
@@ -27,13 +52,9 @@ func IncomingEMAil() backends.ProcessorConstructor {
 								// Network failed
 								return backends.NewResult(fmt.Sprintf("554 Error: %s", err)), err
 							}
-							if !userExist {
-								// Target user doesn't exist
-								err := fmt.Errorf("cannot find user")
-								return backends.NewResult(fmt.Sprintf("450 Error: %s", err)), err
+							if userExist {
+								pendingUserIDs = append(pendingUserIDs, userID)
 							}
-
-							pendingUserIDs = append(pendingUserIDs, userID)
 						}
 
 						if len(pendingUserIDs) > 0 {
@@ -66,8 +87,8 @@ func IncomingEMAil() backends.ProcessorConstructor {
 							return p.Process(e, task)
 						} else {
 							// No match, wrong message
-							err := fmt.Errorf("host not match")
-							return backends.NewResult(fmt.Sprintf("450 Error: %s", err)), err
+							err := fmt.Errorf("no user found")
+							return backends.NewResult(fmt.Sprintf("551 Error: %s", err)), err
 						}
 
 					} else {

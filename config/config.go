@@ -7,8 +7,10 @@ type config struct {
 		FolderID string `yaml:"folderId"`
 	} `yaml:"misskey"`
 	EMail struct {
-		Host      []string `yaml:"host"`
-		ReaderUrl string   `yaml:"readerUrl"`
+		Host       []string `yaml:"host"`
+		ReaderUrl  string   `yaml:"readerUrl"`
+		VerifyDKIM bool     `yaml:"verifyDKIM"`
+		SizeLimit  int      `yaml:"sizeLimit"`
 	} `yaml:"email"`
 	System struct {
 		Redis      string `yaml:"redis"`
