@@ -35,9 +35,15 @@ func IncomingEMAil() backends.ProcessorConstructor {
 								// Failed to verify DKIM
 								return backends.NewResult(fmt.Sprintf("451 Error: %s", err)), err
 							}
+							if len(verifications) == 0 {
+								// No signature found
+								err = fmt.Errorf("no DKIM signature found")
+								return backends.NewResult(fmt.Sprintf("503 Error: %s", err)), err
+							}
 							for _, v := range verifications {
 								if v.Err != nil {
 									// Invalid signature
+									err = fmt.Errorf("email signature invalid")
 									return backends.NewResult(fmt.Sprintf("503 Error: %s", err)), err
 								}
 							}
