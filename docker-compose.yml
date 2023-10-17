@@ -3,7 +3,7 @@ services:
   app:
     restart: always
     #build: .
-    image: ncr.pub/nyaone/email2misskey:latest
+    image: ncr.pub/nyaone/email/email2misskey:latest
     networks:
       - internal_network
       - external_network
