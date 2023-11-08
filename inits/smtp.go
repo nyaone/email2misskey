@@ -26,6 +26,13 @@ func SMTP() error {
 		ListenInterface: config.Config.System.Listen,
 		IsEnabled:       true,
 	}
+	if config.Config.EMail.TLS.Enable {
+		sc.TLS = guerrilla.ServerTLSConfig{
+			PublicKeyFile:  config.Config.EMail.TLS.Cert,
+			PrivateKeyFile: config.Config.EMail.TLS.Key,
+			StartTLSOn:     true,
+		}
+	}
 	cfg.Servers = append(cfg.Servers, sc)
 	// Config backend
 	additionalSaveProcess := ""

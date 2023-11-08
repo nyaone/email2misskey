@@ -8,7 +8,11 @@ email:
   readerUrl: "https://mail.nya.one"
   verifyDKIM: true
   sizeLimit: 102400 # 100KB
+  tls:
+    enable: true
+    cert: /tls/cert.pem
+    key: /tls/key.pem
 system:
   redis: "redis://localhost:6379/0"
-  listen: "0.0.0.0:25"
+  listen: "0.0.0.0:2525"
   production: true

@@ -28,3 +28,6 @@ config.yml
 # Test files
 *.eml
 *.zip
+
+# TLS Certificates
+tls/

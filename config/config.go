@@ -11,6 +11,11 @@ type config struct {
 		ReaderUrl  string   `yaml:"readerUrl"`
 		VerifyDKIM bool     `yaml:"verifyDKIM"`
 		SizeLimit  int      `yaml:"sizeLimit"`
+		TLS        struct {
+			Enable bool   `yaml:"enable"`
+			Cert   string `yaml:"cert"`
+			Key    string `yaml:"key"`
+		} `yaml:"tls"`
 	} `yaml:"email"`
 	System struct {
 		Redis      string `yaml:"redis"`

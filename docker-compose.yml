@@ -8,9 +8,12 @@ services:
       - internal_network
       - external_network
     ports:
-      - "25:25"
+      - "25:2525"
+      - "465:2525"
+      - "587:2525"
     volumes:
       - "./config.yml:/app/config.yml:ro"
+      - "./tls:/tls:ro"
 
   redis:
     restart: always
@@ -23,6 +26,7 @@ services:
       - internal_network
     volumes:
       - ./redis:/data
+
 networks:
   internal_network:
     internal: true
