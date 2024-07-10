@@ -5,7 +5,7 @@ import (
 	"email2misskey/config"
 	"email2misskey/global"
 	"fmt"
-	"github.com/go-redis/redis/v9"
+	"github.com/redis/go-redis/v9"
 	"time"
 )
 
