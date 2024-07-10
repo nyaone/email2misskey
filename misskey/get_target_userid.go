@@ -42,7 +42,7 @@ func getUserIDFromCache(username string) (*string, error) {
 
 func saveUserIDToCache(username string, userID string) {
 	cacheKey := fmt.Sprintf(consts.CacheUsernameTemplate, config.Config.Misskey.Instance, username)
-	global.Redis.Set(context.Background(), cacheKey, userID, 0)
+	global.Redis.Set(context.Background(), cacheKey, userID, consts.CacheUsernameEx)
 }
 
 type UserShow_Request struct {
