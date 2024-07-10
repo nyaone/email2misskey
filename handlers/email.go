@@ -53,13 +53,13 @@ func IncomingEMAil() backends.ProcessorConstructor {
 						var pendingUserIDs []string
 						for _, rcpt := range e.RcptTo {
 							username := strings.ToLower(rcpt.User)
-							userID, userExist, err := misskey.GetTargetUserID(username)
+							userID, err := misskey.GetTargetUserID(username)
 							if err != nil {
 								// Network failed
 								return backends.NewResult(fmt.Sprintf("554 Error: %s", err)), err
 							}
-							if userExist {
-								pendingUserIDs = append(pendingUserIDs, userID)
+							if userID != nil {
+								pendingUserIDs = append(pendingUserIDs, *userID)
 							}
 						}
 

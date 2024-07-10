@@ -8,35 +8,35 @@ import (
 	"fmt"
 )
 
-func GetTargetUserID(username string) (string, bool, error) {
+func GetTargetUserID(username string) (*string, error) {
 	id, err := getUserIDFromCache(username)
 	if err == nil {
-		return id, true, nil
+		return id, nil
 	}
 	// Else
 	return getUserIDFromMisskey(username)
 }
 
-func getUserIDFromCache(username string) (string, error) {
+func getUserIDFromCache(username string) (*string, error) {
 	// Get data from cache
 	cacheKey := fmt.Sprintf(consts.CacheUsernameTemplate, config.Config.Misskey.Instance, username)
 	// Check if in cache
 	exist, err := global.Redis.Exists(context.Background(), cacheKey).Result()
 	if err != nil {
 		global.Logger.Errorf("Failed to check user existence in cache")
-		return "", err
+		return nil, err
 	}
 	if exist == 0 {
 		global.Logger.Debugf("User not exist in cache")
-		return "", fmt.Errorf("user not in cache")
+		return nil, fmt.Errorf("user not in cache")
 	}
 
 	userID, err := global.Redis.Get(context.Background(), cacheKey).Result()
 	if err != nil {
 		global.Logger.Errorf("Failed to get user ID from cache")
-		return "", err
+		return nil, err
 	}
-	return userID, nil
+	return &userID, nil
 
 }
 
@@ -46,20 +46,36 @@ func saveUserIDToCache(username string, userID string) {
 }
 
 type UserShow_Request struct {
+	I        string  `json:"i"`
 	Username string  `json:"username"`
 	Host     *string `json:"host"` // Null
 }
 
-func getUserIDFromMisskey(username string) (string, bool, error) {
+type UserShow_Response struct {
+	// I_Response
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+
+	IsFollowed bool `json:"isFollowed"`
+}
+
+func getUserIDFromMisskey(username string) (*string, error) {
 	// Get data from Misskey
 
-	res, err := PostAPIRequest[I_Response]("users/show", &UserShow_Request{
+	res, err := PostAPIRequest[UserShow_Response]("users/show", &UserShow_Request{
+		I:        config.Config.Misskey.Token,
 		Username: username,
 		Host:     nil,
 	})
 	if err != nil {
 		global.Logger.Errorf("Failed to get user id for @%s with error: %v", username, err)
-		return "", false, err
+		return nil, err
+	}
+
+	if !res.IsFollowed {
+		// Exist but not enabled, set as non-exist
+		return nil, nil
 	}
 
 	// Exist
@@ -67,5 +83,5 @@ func getUserIDFromMisskey(username string) (string, bool, error) {
 
 	saveUserIDToCache(username, res.ID)
 
-	return res.ID, true, nil
+	return &res.ID, nil
 }

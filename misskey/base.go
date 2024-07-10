@@ -18,7 +18,7 @@ type Error_Response struct {
 	} `json:"error"`
 }
 
-func PostAPIRequest[T I_Response | CreatePrivateNote_Response](
+func PostAPIRequest[T any](
 	apiEndpointPath string, reqBody any,
 ) (*T, error) {
 	// Prepare request
